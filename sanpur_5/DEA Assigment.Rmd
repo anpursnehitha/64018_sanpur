@@ -1,0 +1,228 @@
+---
+title: "DEA Assignment"
+author: "Snehitha Anpur"
+date: "2022-10-30"
+output: pdf_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Question:
+
+Creating matrix for the problem
+ 
+```{r}
+
+
+x <- matrix(c(150,400,320,520,350, 320, 0.2, 0.7, 1.2, 2.0, 1.2, 0.7),ncol = 2)
+y <- matrix(c(14000,14000,42000,28000,19000,14000,3500,21000,10500,42000,
+25000, 15000),ncol = 2)
+
+# Assign column names
+colnames(x) <- c("Staff_Hours_per_day","Supplies_per_day")
+colnames(y) <- c("Reimbursed_patient_days", "Privately_paid_patient-days")
+
+```
+Solution:
+
+Formulating and performing DEA analysis
+
+DEA Analysis using FDH
+
+```{r}
+
+library(Benchmarking)
+library(tidyverse)
+
+# Analysing DEA using FDH with x and y values
+fdh_ana = dea(x,y,RTS = "fdh")
+
+#Coverting efficiency value to Data frame 
+fdh_eff = as.data.frame(fdh_ana$eff)
+
+```
+ 
+ DEA Analysis using CRS
+ 
+```{r}
+
+# Analysing DEA using CRS with x and y values
+crs_ana = dea(x,y,RTS = "crs")
+
+#Coverting efficiency value to Data frame 
+crs_eff = as.data.frame(crs_ana$eff)
+
+```
+DEA Analysis using VRS
+
+```{r}
+
+# Analysing DEA using VRS with x and y values
+vrs_ana = dea(x,y,RTS = "vrs")
+
+#Coverting efficiency value to Data frame 
+vrs_eff = as.data.frame(vrs_ana$eff)
+
+```
+
+DEA Analysis using IRS
+
+```{r}
+# Analysing DEA using IRS with x and y values
+irs_ana <- dea(x,y,RTS = "irs")
+
+#Coverting efficiency value to Data frame 
+irs_eff = as.data.frame(irs_ana$eff)
+
+```
+
+DEA Analysis using DRS
+
+```{r}
+
+# Analysing DEA using DRS with x and y values
+drs_ana = dea(x,y,RTS = "drs")
+
+#Coverting efficiency value to Data frame
+drs_eff = as.data.frame(drs_ana$eff)
+
+```
+
+DEA Analysis using FRH
+
+```{r}
+
+# Analysing DEA using FRH with x and y values
+frh_ana = dea(x,y,RTS = "add")
+
+#Coverting efficiency value to Data frame
+frh_eff = as.data.frame(frh_ana$eff)
+
+```
+
+Determining the Peers and Lambdas under each of the above assumptions
+
+Determining Peers and Lambdas for FDH
+
+```{r}
+
+# Determining peers
+fdh_peers <- peers(fdh_ana)
+
+# Determining the weights using lambda function for the  peer values
+fdh_lamda <- lambda(fdh_ana)
+
+```
+Determining Peers and Lambdas for CRS
+
+```{r}
+# Determining peers
+crs_peers <- peers(crs_ana)
+
+# Determining the weights using lambda function for the  peer values
+crs_lamda <- lambda(crs_ana)
+```
+
+Determining Peers and Lambdas for VRS
+
+```{r}
+# Determining peers
+vrs_peers <- peers(vrs_ana)
+
+# Determining the weights using lambda function for the peer values
+vrs_lamda <- lambda(vrs_ana)
+
+```
+
+
+Determining Peers and Lambdas for IRS
+
+```{r}
+
+# Determining peers
+
+irs_peers <- peers(irs_ana)
+
+# Determining the weights using lambda function for the peer values
+
+irs_lamda <- lambda(irs_ana)
+```
+
+Determining Peers and Lambdas for DRS
+
+```{r}
+
+# Determining peers
+drs_peers <- peers(drs_ana)
+
+# Determining the weights using lambda function for the peer values
+drs_lamda <- lambda(drs_ana)
+```
+
+Determining Peers and Lambdas for FDH
+
+```{r}
+# Identify the peers
+frh_peers <- peers(frh_ana)
+
+# Identify the relative weights given to the peers using lambda function
+frh_lamda <- lambda(frh_ana)
+```
+
+Summarizing results in a tabular format
+
+```{r}
+
+fdh_result <- data.frame(fdh_eff,fdh_peers, fdh_lamda)
+crs_result <- data.frame(crs_eff,crs_peers, crs_lamda)
+vrs_result <- data.frame(vrs_eff,vrs_peers, vrs_lamda)
+irs_result <- data.frame(irs_eff,irs_peers, irs_lamda)
+drs_result <- data.frame(drs_eff,drs_peers, drs_lamda)
+frh_result <- cbind(frh_eff,frh_peers, frh_lamda)
+
+```
+
+```{r}
+fdh_result
+crs_result
+vrs_result
+irs_result
+drs_result
+frh_result
+```
+
+
+ Compare and contrast the above results 
+
+
+For FDH
+
+From the information peer value was given one unit, both lamda and efficiency values are 1 and from the result table it states that every DMU and facility is having maximum capacity and effectiveness.
+
+
+
+For CRS
+
+From the lamdas and peers it is observed that the efficiency of facilities 1, 2, 3, and 4 are 100% which means they use CRS fully. The efficiency for 5 and 6 is 97.74% and 86.74% respectively which can be improved.
+
+For VRS
+
+From the lamdas and peers we can tell facilities—numbers 1, 2, 3, 4, and 5 has maximum efficieny/productivity. With facility 6, which has an efficiency of 89.63%.
+
+For IRS
+
+ Facilities 1, 2, 3, 4, and 5 operate at full productivity, IRS and VRS are both achieved. For facility 6, has 89.63% efficiency requires improvement from units 1, 2, and 5.
+
+For DRS
+
+ For facilities 1, 2, 3, and 4, Decreasing Returns to Scale (DRS) performs well in terms of efficiency and for facilities 5 and 6 needs improvement and require a portion of facilities 1, 2, and 4 in order to get maximum efficiency of 1.
+
+For FRH
+
+ All facilities are efficient which are observed in peer and lambda.
+
+
+
