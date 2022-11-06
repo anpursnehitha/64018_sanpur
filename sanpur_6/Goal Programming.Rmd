@@ -1,0 +1,93 @@
+---
+title: "Goal Programming"
+author: "Snehitha Anpur"
+date: "2022-11-06"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Question:
+
+The Research and Development Division of the Emax Corporation has developed three new products.
+
+Management wants consideration to three factors. Total Profit, Stability in the workforce and To increase in company’s earnings next year from the $75 million achieved this year.
+
+Now the decision now needs to be made on which mix of these products should be produced.
+
+Objective Function
+Maximize Z = P - 6C - 3D, where
+
+P = Total discounted profit over the life of the new products,
+C = Change in either direction towards the current level of employment,
+D = decrease if any in next year’s earnings from the current year’s level.
+Setting default values to get a clean output
+
+```{r}
+
+library(lpSolve)
+library(lpSolveAPI)
+
+```
+
+```{r}
+Emax_corporation <- matrix(c("Total Profit", 20,15,25,"Maximize","Millions of Dollors",
+                       "Employment Level",6,4,5,"=50","Hundreds of Employees",
+                       "Earnings Next Year",8,7,5,">=75","Millions of Dollors"), nrow = 3, byrow = TRUE) 
+colnames(Emax_corporation) <- c("Factor","Product 1", "Product 2", "Product 3", "Goal", "Units")
+
+Emax_corporation
+```
+Solution:
+
+y1P = Amount over(if any) employment level goal.
+
+y1N = Amount under (if any) employment level goal.
+
+y2P = Amount over (if any)  goal regarding earnings next year.
+
+y2N = Amount under (if any) goal regarding earnings next year.
+
+x1, x2 and x3 as the production rates of Products 1, 2, and 3, respectively.
+
+
+
+Objective function
+
+max: 20x1 + 15x2 + 25x3 - 6y1N - 6y1P - 3y2N;
+
+Constraints
+
+6x1 + 4x2 + 5x3 + y1N - y1P = 50;
+
+8x1 + 7x2 + 5x3 + y2N - y2P = 75;
+
+```{r}
+
+Emax_file<- read.lp("Emax_program.lp")
+
+```
+
+Solving Goal programming
+
+```{r}
+
+solve(Emax_file)
+#Objective function is:
+
+get.objective(Emax_file)
+
+#Variables are 
+get.variables(Emax_file)
+
+```
+Conclusion
+
+1. From the solution obtained, x1=0, x2=0 and x3=15 that means Product 1 and Product 2 cannot be produced but 15 Units of Product 3 can be produced by firm to maximize the profit.
+
+2. The objective of the firm is to stabilize the employment level with 50 Hundred Employees as maximum and achieve an increase in the next years earnings from the current level but from the above result we observed that firm increased 25 hundred employees for which they have pay penalty for the rise in employees count and “0” for y1+ and y1- in the earning says that there is no increase or decrease in the earnings of next year when compared to current year. Thus the firm does not have to pay penalty as the earning remain constant.
+
+3. The profit that the firm is 225 Million Dollars.
+
+
