@@ -1,0 +1,64 @@
+---
+title: "Integer programming"
+author: "Snehitha Anpur"
+date: "2022-11-21"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Given
+
+```{r}
+Weekday_vs_workers= matrix(data=c("SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATUARDAY",18,27,22,26,25,21,19),nrow=7,byrow=FALSE)
+
+Dayoff_vs_wage= matrix(data=c("Sunday and Monday","Monday and Tuesday","Tuesday and Wednesday","Wednesday and Thursday","Thursday and Friday","Friday and Satuarday","Satuarday and Sunday", 775,800,800,800,800,775,750),nrow=7, byrow=FALSE)
+
+Dayoff_vs_wage
+
+Weekday_vs_workers
+```
+
+
+Let Number of Workers in a shift are x1, x2, x3, x4, x5, x6, x7
+
+Hence Objective Function is to minimize the number off workers in the week. There-Fore
+Min:775x1+800x2+800x3+800x4+800x5+775x6+750x7
+
+Constraints are 
+x2 + x3 + x4 + x5 + x6 >=18;
+x3 + x4 + x5 + x6 + x7 >=27;
+x1 + x4 + x5 + x6 + x7 >=22;
+x1 + x2 + x5 + x6 + x7 >=26;
+x1 + x2 + x3 + x6 + x7 >=25;
+x1 + x2 + x3 + x4 + x7 >=21;
+x1 + x2 + x3 + x4 + x5 >=19;
+
+```{r}
+library(lpSolveAPI)
+
+Sol <- read.lp("Integer_programming.lp")
+
+solve(Sol) 
+
+get.objective(Sol)  
+
+get.variables(Sol)
+
+```
+The minimum cost is 25,675 dollors
+
+Number of workers available on Sunday is 19,
+
+Monday is 27, 
+
+Tuesday is 24,
+
+Wednesday is 28,
+
+Thursday is 25, 
+
+Friday is 24,
+
+Saturday is 20.
